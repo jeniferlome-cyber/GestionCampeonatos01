@@ -12,4 +12,12 @@ class EquipoRepository(
     suspend fun insertar(equipo: Equipo) {
         equipoDao.insertar(equipo)
     }
+
+    suspend fun actualizar(equipo: Equipo) {
+        equipoDao.actualizar(equipo)
+    }
+
+    suspend fun eliminar(id: Int) {
+        equipoDao.eliminar(id)
+    }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface EquipoDao {
@@ -13,4 +14,10 @@ interface EquipoDao {
 
     @Insert
     suspend fun insertar(equipo: Equipo)
+
+    @Update
+    suspend fun actualizar(equipo: Equipo)
+
+    @Query("DELETE FROM equipos WHERE id = :id")
+    suspend fun eliminar(id: Int)
 }

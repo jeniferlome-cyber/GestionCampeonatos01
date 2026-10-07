@@ -8,7 +8,7 @@ del nombre; cuando no hay imagen se usa un escudo predeterminado.
 
 Se conserva la estructura de Jugadores: clases Kotlin, XML, `findViewById`,
 `AlertDialog`, `RecyclerView.Adapter`, `LiveData`, repositorio, ViewModel y fábrica.
-No se agregan librerías. Esta primera versión implementa agregar y listar equipos.
+No se agregan librerías. Implementa agregar, listar, editar y eliminar equipos.
 
 Los archivos Kotlin están bajo
 `app/src/main/java/com/example/gestion_de_campeonatos01/`:
@@ -16,7 +16,7 @@ Los archivos Kotlin están bajo
 | Referencia de Jugadores | Archivo de Equipos | Responsabilidad |
 | --- | --- | --- |
 | `data/Jugador.kt` | `data/Equipo.kt` | Entidad Room: id, nombre e imagen opcional |
-| `data/JugadorDao.kt` | `data/EquipoDao.kt` | Listar por id descendente e insertar |
+| `data/JugadorDao.kt` | `data/EquipoDao.kt` | Listar por id descendente, insertar, actualizar y eliminar |
 | `data/JugadorRepository.kt` | `data/EquipoRepository.kt` | Delegar operaciones al DAO |
 | `viewmodel/JugadorViewModel.kt` | `viewmodel/EquipoViewModel.kt` | Exponer equipos y ejecutar operaciones con corrutinas |
 | `viewmodel/JugadorViewModelFactory.kt` | `viewmodel/EquipoViewModelFactory.kt` | Crear el ViewModel con su repositorio |
@@ -76,3 +76,7 @@ Estas pruebas requieren un dispositivo o emulador Android.
 Revisión manual: abrir Equipos, intentar guardar un nombre vacío, agregar sin
 imagen, agregar con imagen, cancelar el selector, quitar la imagen del formulario,
 girar la pantalla con el formulario abierto y reabrir la aplicación.
+
+## Editar y eliminar
+
+Cada fila tiene botones Editar y Eliminar, conectados mediante callbacks del adaptador como en Jugadores. Editar reutiliza el formulario de alta con los valores actuales y conserva el id para actualizar el mismo registro. Se puede conservar, reemplazar o quitar la imagen. Eliminar pide confirmación con el nombre del equipo y borra por id. La lista se actualiza por LiveData y el mensaje de éxito aparece después de completar la operación. No se cambia el esquema de Room.

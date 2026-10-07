@@ -30,6 +30,8 @@ class GestionEquiposActivity : AppCompatActivity() {
     private lateinit var adapter: EquipoAdapter
     private var dialogoAgregar: AlertDialog? = null
     private var vistaFormulario: View? = null
+    private var equipoId = 0
+    private var dialogoEliminar: AlertDialog? = null
 
     // El selector del sistema permite elegir una imagen sin permisos de almacenamiento.
     private val seleccionarImagen = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -63,17 +65,23 @@ class GestionEquiposActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, factory)[EquipoViewModel::class.java]
 
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerEquipos)
-        adapter = EquipoAdapter()
+        adapter = EquipoAdapter(
+            onEliminar = { equipo -> mostrarDialogEliminar(equipo) },
+            onModificar = { equipo -> mostrarDialogEditar(equipo) }
+        )
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
         findViewById<Button>(R.id.btnAgregarEquipo).setOnClickListener {
+            if (viewModel.guardando.value == true) return@setOnClickListener
+            equipoId = 0
             viewModel.imagenSeleccionada.value = null
             mostrarDialogAgregar()
         }
         findViewById<View>(R.id.btnVolver).setOnClickListener { finish() }
 
         if (savedInstanceState?.getBoolean("formularioAbierto") == true) {
+            equipoId = savedInstanceState.getInt("equipoId")
             if (viewModel.imagenSeleccionada.value == null) {
                 viewModel.imagenSeleccionada.value = savedInstanceState.getByteArray("imagenEquipo")
             }
@@ -93,7 +101,7 @@ class GestionEquiposActivity : AppCompatActivity() {
                 dialogoAgregar?.dismiss()
                 viewModel.imagenSeleccionada.value = null
                 viewModel.guardado.value = false
-                Toast.makeText(this, "Equipo agregado", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, viewModel.mensajeExito, Toast.LENGTH_SHORT).show()
             }
         }
         viewModel.error.observe(this) { mensaje ->
@@ -104,6 +112,26 @@ class GestionEquiposActivity : AppCompatActivity() {
         }
     }
 
+    private fun mostrarDialogEditar(equipo: Equipo) {
+        if (viewModel.guardando.value == true || dialogoAgregar != null) return
+        equipoId = equipo.id
+        viewModel.imagenSeleccionada.value = equipo.imagen
+        mostrarDialogAgregar(equipo.nombre)
+    }
+
+    private fun mostrarDialogEliminar(equipo: Equipo) {
+        if (viewModel.guardando.value == true || dialogoEliminar != null) return
+        dialogoEliminar = AlertDialog.Builder(this)
+            .setTitle("Eliminar equipo")
+            .setMessage("¿Quieres eliminar el equipo «${equipo.nombre}»? Esta acción no se puede deshacer.")
+            .setNegativeButton("Cancelar", null)
+            .setPositiveButton("Eliminar") { _, _ -> viewModel.eliminar(equipo.id) }
+            .create()
+        dialogoEliminar?.setOnDismissListener { dialogoEliminar = null }
+        dialogoEliminar?.show()
+    }
+
+    // Agregar y editar comparten el mismo diseño y validación.
     private fun mostrarDialogAgregar(nombre: String = "") {
         if (dialogoAgregar != null) return
 
@@ -127,7 +155,7 @@ class GestionEquiposActivity : AppCompatActivity() {
         }
 
         val dialogo = AlertDialog.Builder(this)
-            .setTitle("Agregar equipo")
+            .setTitle(if (equipoId == 0) "Agregar equipo" else "Editar equipo")
             .setView(vista)
             .setNegativeButton("Cancelar", null)
             .setPositiveButton("Guardar", null)
@@ -149,10 +177,15 @@ class GestionEquiposActivity : AppCompatActivity() {
             }
 
             val equipo = Equipo(
+                id = equipoId,
                 nombre = nombreEquipo,
                 imagen = viewModel.imagenSeleccionada.value
             )
-            viewModel.insertar(equipo)
+            if (equipoId == 0) {
+                viewModel.insertar(equipo)
+            } else {
+                viewModel.actualizar(equipo)
+            }
         }
         mostrarVistaPrevia()
         actualizarBotones()
@@ -187,12 +220,16 @@ class GestionEquiposActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putBoolean("formularioAbierto", dialogoAgregar != null)
+        outState.putInt("equipoId", equipoId)
         outState.putString("nombreEquipo", vistaFormulario?.findViewById<EditText>(R.id.etNombreEquipo)?.text?.toString())
         outState.putByteArray("imagenEquipo", viewModel.imagenSeleccionada.value)
         super.onSaveInstanceState(outState)
     }
 
     override fun onDestroy() {
+        dialogoEliminar?.setOnDismissListener(null)
+        dialogoEliminar?.dismiss()
+        dialogoEliminar = null
         dialogoAgregar?.setOnDismissListener(null)
         dialogoAgregar?.dismiss()
         dialogoAgregar = null

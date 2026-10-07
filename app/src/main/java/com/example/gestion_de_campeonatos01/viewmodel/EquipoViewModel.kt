@@ -24,6 +24,8 @@ class EquipoViewModel(
     val guardando = MutableLiveData(false)
     val guardado = MutableLiveData(false)
     val error = MutableLiveData<String?>(null)
+    var mensajeExito = ""
+        private set
 
     fun cargarImagen(context: Context, uri: Uri) {
         val applicationContext = context.applicationContext
@@ -44,16 +46,29 @@ class EquipoViewModel(
     }
 
     fun insertar(equipo: Equipo) {
+        ejecutarOperacion("Equipo agregado") { repository.insertar(equipo) }
+    }
+
+    fun actualizar(equipo: Equipo) {
+        ejecutarOperacion("Equipo actualizado") { repository.actualizar(equipo) }
+    }
+
+    fun eliminar(id: Int) {
+        ejecutarOperacion("Equipo eliminado") { repository.eliminar(id) }
+    }
+
+    private fun ejecutarOperacion(mensaje: String, operacion: suspend () -> Unit) {
         if (guardando.value == true) return
         guardando.value = true
         viewModelScope.launch {
             try {
-                repository.insertar(equipo)
+                operacion()
+                mensajeExito = mensaje
                 guardado.value = true
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                error.value = "No se pudo guardar el equipo. Inténtalo nuevamente."
+                error.value = "No se pudo completar la operación. Inténtalo nuevamente."
             } finally {
                 guardando.value = false
             }

@@ -5,12 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gestion_de_campeonatos01.R
 import com.example.gestion_de_campeonatos01.data.Equipo
 
-class EquipoAdapter : RecyclerView.Adapter<EquipoAdapter.EquipoViewHolder>() {
+class EquipoAdapter(
+    private val onEliminar: (Equipo) -> Unit,
+    private val onModificar: (Equipo) -> Unit
+) : RecyclerView.Adapter<EquipoAdapter.EquipoViewHolder>() {
 
     private var lista = emptyList<Equipo>()
 
@@ -28,6 +32,8 @@ class EquipoAdapter : RecyclerView.Adapter<EquipoAdapter.EquipoViewHolder>() {
     override fun onBindViewHolder(holder: EquipoViewHolder, position: Int) {
         val equipo = lista[position]
         holder.txtNombre.text = equipo.nombre
+        holder.btnModificar.setOnClickListener { onModificar(equipo) }
+        holder.btnEliminar.setOnClickListener { onEliminar(equipo) }
         val imagen = equipo.imagen
         val bitmap = imagen?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
         if (bitmap != null) {
@@ -45,5 +51,7 @@ class EquipoAdapter : RecyclerView.Adapter<EquipoAdapter.EquipoViewHolder>() {
     class EquipoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtNombre: TextView = itemView.findViewById(R.id.txtNombreEquipo)
         val imgEquipo: ImageView = itemView.findViewById(R.id.imgEquipo)
+        val btnModificar: Button = itemView.findViewById(R.id.btnModificarEquipo)
+        val btnEliminar: Button = itemView.findViewById(R.id.btnEliminarEquipo)
     }
 }

@@ -24,6 +24,43 @@ class EquipoDatabaseTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Test
+    fun editarYEliminarSoloAfectanAlEquipoSeleccionado() = runBlocking {
+        val database = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
+        try {
+            val dao = database.equipoDao()
+            val imagen = byteArrayOf(1, 2, 3)
+            dao.insertar(Equipo(id = 1, nombre = "Tigres", imagen = imagen))
+            dao.insertar(Equipo(id = 2, nombre = "Leones"))
+            dao.actualizar(Equipo(id = 1, nombre = "Tigres FC", imagen = imagen))
+            database.openHelper.readableDatabase.query("SELECT nombre, imagen FROM equipos WHERE id = 1").use {
+                assertTrue(it.moveToFirst())
+                assertEquals("Tigres FC", it.getString(0))
+                assertArrayEquals(imagen, it.getBlob(1))
+            }
+            val nuevaImagen = byteArrayOf(4, 5, 6)
+            dao.actualizar(Equipo(id = 1, nombre = "Tigres FC", imagen = nuevaImagen))
+            database.openHelper.readableDatabase.query("SELECT imagen FROM equipos WHERE id = 1").use {
+                assertTrue(it.moveToFirst())
+                assertArrayEquals(nuevaImagen, it.getBlob(0))
+            }
+            dao.actualizar(Equipo(id = 1, nombre = "Tigres FC", imagen = null))
+            database.openHelper.readableDatabase.query("SELECT imagen FROM equipos WHERE id = 1").use {
+                assertTrue(it.moveToFirst())
+                assertTrue(it.isNull(0))
+            }
+            dao.eliminar(1)
+            database.openHelper.readableDatabase.query("SELECT id, nombre FROM equipos").use {
+                assertEquals(1, it.count)
+                assertTrue(it.moveToFirst())
+                assertEquals(2, it.getInt(0))
+                assertEquals("Leones", it.getString(1))
+            }
+        } finally {
+            database.close()
+        }
+    }
+
+    @Test
     fun migracionConservaJugadoresYGuardaEquiposConYSinImagen() = runBlocking {
         val nombreDatabase = "equipos-migracion-${System.nanoTime()}.db"
         var database: AppDatabase? = null

@@ -17,16 +17,15 @@
         android:gravity="center_vertical">
 
         <TextView
-            android:id="@+id/btnVolver"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/btnVolver"
+            android:contentDescription="Volver"
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:gravity="center"
             android:clickable="true"
             android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Volver"
             android:text="←"
             android:textSize="28sp"
             android:textColor="#1565C0" />
@@ -35,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="Gestión de Jugadores"
+            android:text="Gestión de Equipos"
             android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="#222222" />
@@ -47,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
-        android:text="Jugadores"
+        android:text="Equipos"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="#222222" />
@@ -56,22 +55,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Administra los jugadores"
+        android:text="Administra los equipos"
         android:textSize="14sp"
         android:textColor="#777777" />
 
     <!-- Botón agregar -->
     <Button
-        android:id="@+id/btnAgregarJugador"
+        android:id="@+id/btnAgregarEquipo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="+ Agregar jugador"
+        android:text="+ Agregar equipo"
         android:textSize="16sp" />
 
-    <!-- Lista de jugadores -->
+    <TextView
+        android:id="@+id/txtSinEquipos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Todavía no hay equipos. Agrega el primero."
+        android:textColor="#666666"
+        android:textSize="14sp"
+        android:visibility="gone" />
+
+    <!-- Lista de equipos -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerJugadores"
+        android:id="@+id/recyclerEquipos"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

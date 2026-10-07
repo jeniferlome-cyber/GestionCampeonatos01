@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="Imagen del equipo (opcional)"
+            android:textColor="#7A8193"
+            android:textSize="16sp" />
+
+        <FrameLayout
+            android:id="@+id/contenedorImagenEquipo"
+            android:layout_width="156dp"
+            android:layout_height="156dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_selector_imagen_equipo"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="Seleccionar imagen del equipo"
+            android:layerType="software"
+            android:padding="24dp">
+
+            <ImageView
+                android:id="@+id/imgVistaPrevia"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="no"
+                android:padding="16dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_agregar_imagen_equipo" />
+
+        </FrameLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnSeleccionarImagen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_boton_imagen_equipo"
+            android:minHeight="48dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:stateListAnimator="@null"
+            android:text="Seleccionar imagen"
+            android:textAllCaps="false"
+            android:textColor="#4169FF"
+            android:textSize="18sp"
+            app:backgroundTint="@null" />
+
+        <Button
+            android:id="@+id/btnQuitarImagen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Quitar imagen"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:labelFor="@id/etNombreEquipo"
+            android:text="Nombre del equipo"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etNombreEquipo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Ingresa el nombre del equipo"
+            android:inputType="textCapWords"
+            android:maxLength="100"
+            android:minHeight="48dp" />
+
+    </LinearLayout>
+</ScrollView>

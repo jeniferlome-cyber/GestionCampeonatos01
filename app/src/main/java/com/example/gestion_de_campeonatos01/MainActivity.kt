@@ -31,5 +31,12 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, GestionJugadoresActivity::class.java)
             startActivity(intent)
         }
+
+        val cardEquipos = findViewById<android.view.View>(R.id.cardEquipos)
+
+        cardEquipos.setOnClickListener {
+            val intent = Intent(this, GestionEquiposActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

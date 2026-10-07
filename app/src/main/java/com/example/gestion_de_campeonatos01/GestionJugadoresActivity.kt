@@ -27,6 +27,9 @@ class GestionJugadoresActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_gestion_jugadores)
+        findViewById<android.view.View>(R.id.btnVolver).setOnClickListener {
+            finish()
+        }
         val btnAgregarJugador = findViewById<Button>(R.id.btnAgregarJugador)
 
         btnAgregarJugador.setOnClickListener {
